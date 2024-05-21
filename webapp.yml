@@ -2,15 +2,17 @@
 - name : "Install apache and docker"
   hosts: prod
   become: true
-   vars:
+  vars:
      system_user: admin 
      compose_binary_dir: /bin
   vars_files:
     - files/secrets/credentials.vault
-  pre_tasks:
-    - name: create www data
-      user:
-        name: www-data
-        state: present
-  roles:
-    - ansible-role-containerized-wordpress#example-playbook
+  #pre_tasks:
+    #- name: create www data
+      #user:
+        #name: www-data
+        #state: present
+  roles:  
+   #- { role: ansible-role-containerized-wordpress#example-playbook }
+    - docker
+    - apache

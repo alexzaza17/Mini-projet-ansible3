@@ -1,20 +1,27 @@
 ---
-- name: "Apache installation using docker"
-  hosts: prod
-  become: true
-  vars_files:
-    - files/secrets/credentials.yml
+- name: Install Apache on Debian-based systems
+  apt:
+    name: apache2
+    state: present
+  when: ansible_os_family == 'Debian'
 
-    - name: Install EPEL repo some prerequis
-      package: name={{ item }} state=present
-      when: ansible_distribution == "CentOS"
-      loop:
-        - epel-release
-        - git
-        - wget
-    - name: Download pip script
-      get_url:
-        url: https://bootstrap.pypa.io/pip/2.7/get-pip.py
-        dest: /tmp/get-pip.py
-    - name: Install python-pip
-      ansible.builtin.command: python2.7 /tmp/get-pip.py
+- name: Install Apache on RedHat-based systems
+  yum:
+    name: httpd
+    state: present
+  when: ansible_os_family == 'RedHat'
+
+- name: Start and enable Apache service on Debian-based systems
+  service:
+    name: apache2
+    state: started
+    enabled: yes
+  when: ansible_os_family == 'Debian'
+
+- name: Start and enable Apache service on RedHat-based systems
+  service:
+    name: httpd
+    state: started
+    enabled: yes
+  when: ansible_os_family == 'RedHat'
+
